@@ -3,12 +3,11 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-from waffle.compat import get_user_model
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding model 'Flag'
         db.create_table('waffle_flag', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -34,7 +33,7 @@ class Migration(SchemaMigration):
         db.create_table('waffle_flag_users', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('flag', models.ForeignKey(orm['waffle.flag'], null=False)),
-            ('user', models.ForeignKey(get_user_model(), null=False))
+            ('user', models.ForeignKey(orm['auth.user'], null=False))
         ))
         db.create_unique('waffle_flag_users', ['flag_id', 'user_id'])
 
@@ -48,7 +47,7 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        
+
         # Deleting model 'Flag'
         db.delete_table('waffle_flag')
 
