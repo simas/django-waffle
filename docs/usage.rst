@@ -199,6 +199,7 @@ behavior.
     ever upgrade and change the shape of the objects (for example
     upgrading from <0.7.5 to >0.7.5) you'll want to set this to
     something other than ``'waffle:'``.
+<<<<<<< HEAD
 ``WAFFLE_FLAG_AUTOCREATE``:
     Whether new Flags will be created automatically when used. Defaults to
     ``False``.
@@ -217,6 +218,16 @@ behavior.
 ``WAFFLE_SAMPLE_DEFAULTS``:
     A dictionary of defaults for flags. Defaults to ``{}``. See
     :ref:`autocreation`.
+=======
+``WAFFLE_CUSTOM_SEGMENT``:
+    String with python path to Django form class. In this form you can define
+    number of fields and form class method called ``flag_is_active``. In this
+    method you can implement any logic that puts user into a specific user
+    segment. ``flag_is_active`` will be called with ``flag``, ``request`` and
+    ``data`` arguments. ``flag`` is instance of ``Flag``, ``request`` is Django
+    request object and ``data`` is a dict specified in flag's
+    ``custom_segment`` field, all fields are validated with this form.
+>>>>>>> d8967dd21faefe3489da72269aabf3e7e807b3e4
 
 
 .. _overriding-flags:
@@ -334,8 +345,14 @@ Rollout Mode is enabled **per flag**.
 Waffle in JavaScript
 ====================
 
-Waffle now helps you use flags directly in JavaScript. You need to add
-the Waffle URLs to your URL config::
+Waffle now helps you use flags directly in JavaScript. You can create a global
+``waffle`` object for your JavaScript with either the ``wafflejs`` view, or the
+``wafflejs`` template tag (django) or helper (jinja).
+
+wafflejs view
+-------------
+To use the ``wafflejs`` view, You need to add the Waffle URLs to your URL 
+config::
 
     urlpatterns = patterns('',
         # ...
@@ -347,6 +364,34 @@ This adds a named URL route called ``wafflejs``. You can then load the
 Waffle JavaScript in your templates::
 
     <script src="{% url wafflejs %}"></script>
+
+wafflejs tag/helper
+-------------------
+
+To use the tag or helper, simply call it from within a ``<script>`` block in a 
+template. This removes an extra HTTP request for the ``wafflejs`` resource.
+
+Django tag::
+
+    <script type="text/javascript">
+    {% wafflejs %}
+    </script>
+
+Jinja helper::
+
+    <script type="text/javascript">
+    {{ waffle.wafflejs() }}
+    </script>
+
+If using Jingo_, you need to add ``waffle`` to your ``JINGO_EXCLUDE_APPS``
+for the ``waffle.js`` template to render.::
+
+   JINGO_EXCLUDE_APPS = (
+       'waffle',
+   )
+
+Use the waffle object
+---------------------
 
 Once you've loaded the JavaScript, you can use the global ``waffle``
 object.  Just pass in a flag name. As in the Python API, if a flag or
