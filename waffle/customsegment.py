@@ -14,7 +14,7 @@ def get_custom_segment_form(custom_segment_form=None):
 
 
 def check_custom_segment(flag, request):
-    if not flag.custom_segment:
+    if not hasattr(flag, 'custom_segment') or not flag.custom_segment:
         return False
 
     CustomSegmentForm = get_custom_segment_form()
